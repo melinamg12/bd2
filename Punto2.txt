@@ -1,0 +1,38 @@
+CREATE TABLE sucursal(
+cods VARCHAR2(500) PRIMARY KEY,
+nrosucdependientes NUMBER(1) NOT NULL CHECK (nrosucdependientes BETWEEN 0 AND 9)
+);
+
+CREATE OR REPLACE TRIGGER ingresar_deps
+BEFORE INSERT ON sucursal
+FOR EACH ROW
+DECLARE
+ nro_dependientes sucursal.nrosucdependientes%TYPE := :NEW.nrosucdependientes;
+BEGIN
+ IF nro_dependientes > 0 THEN 
+  FOR i IN 1..nro_dependientes LOOP
+   INSERT INTO sucursal VALUES(:NEW.cods ||'.'||i, 0);
+  END LOOP;
+ END IF;
+END;
+/ 
+
+-----------------------------------------------------------
+
+CREATE OR REPLACE TRIGGER actualizar_deps
+BEFORE UPDATE ON sucursal
+FOR EACH ROW
+DECLARE
+BEGIN
+IF :NEW.nrosucdependientes > :OLD.nrosucdependientes THEN
+ FOR i IN (:OLD.nrosucdependientes + 1)..:NEW.nrosucdependientes LOOP
+  INSERT INTO sucursal VALUES(:NEW.cods ||'.'||i, 0);
+ END LOOP;
+END IF;
+END;
+/
+
+
+ 
+   
+ 
