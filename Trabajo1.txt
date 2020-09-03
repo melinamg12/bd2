@@ -1,3 +1,5 @@
+----------------------------PUNTO 2--------------------------------------------------------------
+
 CREATE TABLE sucursal(
 cods VARCHAR2(500) PRIMARY KEY,
 nrosucdependientes NUMBER(1) NOT NULL CHECK (nrosucdependientes BETWEEN 0 AND 9)
