@@ -6,35 +6,92 @@ nrosucdependientes NUMBER(1) NOT NULL CHECK (nrosucdependientes BETWEEN 0 AND 9)
 );
 
 CREATE OR REPLACE TRIGGER ingresar_deps
-BEFORE INSERT ON sucursal
-FOR EACH ROW
-DECLARE
- nro_dependientes sucursal.nrosucdependientes%TYPE := :NEW.nrosucdependientes;
-BEGIN
- IF nro_dependientes > 0 THEN 
-  FOR i IN 1..nro_dependientes LOOP
-   INSERT INTO sucursal VALUES(:NEW.cods ||'.'||i, 0);
-  END LOOP;
- END IF;
-END;
-/ 
+FOR INSERT ON sucursal
+COMPOUND TRIGGER
+     nro_dependientes sucursal.nrosucdependientes%TYPE := :NEW.nrosucdependientes;
+     TYPE sucursal_type IS TABLE OF sucursal%ROWTYPE INDEX BY BINARY_INTEGER;
+     sucursal_temp sucursal_type;
+     i NUMBER;
+     
+     AFTER EACH ROW IS
+     BEGIN
+       IF nro_dependientes > 0 THEN 
+        FOR i IN 1..nro_dependientes LOOP
+         sucursal_temp(i).cods := :NEW.cods ||'.'||i;
+         sucursal_temp(i).nrosucdependientes := 0;
+        END LOOP;
+       END IF;
+     END AFTER EACH ROW;
+   
+     --Executed after DML statement
+     AFTER STATEMENT IS
+     BEGIN
+       i := sucursal_temp.FIRST;
+       WHILE i IS NOT NULL LOOP
+         INSERT INTO sucursal VALUES sucursal_temp(i);
+         i := sucursal_temp.NEXT(i);
+       END LOOP;
+     END AFTER STATEMENT;
+
+END ingresar_deps;
+/
 
 -----------------------------------------------------------
 
 CREATE OR REPLACE TRIGGER actualizar_deps
-BEFORE UPDATE ON sucursal
-FOR EACH ROW
-DECLARE
-BEGIN
-IF :NEW.nrosucdependientes > :OLD.nrosucdependientes THEN
- FOR i IN (:OLD.nrosucdependientes + 1)..:NEW.nrosucdependientes LOOP
-  INSERT INTO sucursal VALUES(:NEW.cods ||'.'||i, 0);
- END LOOP;
-END IF;
-END;
-/
-
-
- 
+FOR UPDATE OF nrosucdependientes ON sucursal
+COMPOUND TRIGGER
+   TYPE sucursal_type IS TABLE OF sucursal%ROWTYPE INDEX BY BINARY_INTEGER;
+   sucursal_temp sucursal_type;
+   i NUMBER;
+   j NUMBER;
+   k NUMBER;
+   dependientes_mayor BOOLEAN :=False;
+        
+     AFTER EACH ROW IS
+     BEGIN
+       IF :NEW.nrosucdependientes > :OLD.nrosucdependientes THEN
+       dependientes_mayor := True;
+        FOR i IN (:OLD.nrosucdependientes + 1)..:NEW.nrosucdependientes LOOP
+         sucursal_temp(i).cods := :NEW.cods || '.' || i;
+         sucursal_temp(i).nrosucdependientes := 0;
+        END LOOP;
+       ELSIF :NEW.nrosucdependientes < :OLD.nrosucdependientes THEN
+        dependientes_mayor := False;
+        j := 0;
+        FOR i IN (:NEW.nrosucdependientes + 1)..:OLD.nrosucdependientes LOOP
+         sucursal_temp(j).cods := :NEW.cods || '.' || i;
+         sucursal_temp(j).nrosucdependientes := 0;
+         j := sucursal_temp.LAST + 1;
+         
+        END LOOP;
+       END IF;
+       
+     END AFTER EACH ROW;
    
- 
+     AFTER STATEMENT IS
+     BEGIN
+       i := sucursal_temp.FIRST;
+       IF dependientes_mayor THEN
+        WHILE i IS NOT NULL LOOP
+         INSERT INTO sucursal VALUES sucursal_temp(i);
+         i := sucursal_temp.NEXT(i);
+        END LOOP;
+       ELSE
+        WHILE i IS NOT NULL LOOP
+         SELECT nrosucdependientes INTO j 
+         FROM sucursal WHERE sucursal.cods = sucursal_temp(i).cods;
+         IF j > 0 THEN
+          FOR k IN 1..j LOOP
+           sucursal_temp(sucursal_temp.LAST +1).cods := sucursal_temp(i).cods || '.' || k;
+          END LOOP;
+         END IF;
+         DELETE FROM sucursal WHERE sucursal.cods = sucursal_temp(i).cods;
+         i := sucursal_temp.NEXT(i);
+        END LOOP;
+       END IF;
+        
+     END AFTER STATEMENT;
+
+END actualizar_deps;
+/
