@@ -1,4 +1,16 @@
 ----------------------------PUNTO 1---------------------------------------------------------------
+CREATE TABLE proveedor(
+codpv NUMBER(8) PRIMARY KEY,
+nompv VARCHAR2(10) NOT NULL
+);
+
+CREATE TABLE venta(
+idv NUMBER(8) PRIMARY KEY,
+codpv NUMBER(8) REFERENCES proveedor NOT NULL,
+codproducto NUMBER(8) NOT NULL
+);
+
+
 CREATE OR REPLACE PROCEDURE punto1(var_n NUMBER) IS
     CURSOR tabla IS SELECT DISTINCT codpv, codproducto FROM venta ORDER BY codpv,codproducto; 
     original VARCHAR2(200):=''; 
