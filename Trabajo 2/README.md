@@ -1,7 +1,7 @@
 ## Información General
-El "Main.java" en este caso es el App.java
-Lo realice en VSCode
-El JDK es la versión 8
+* El "Main.java" en este caso es el App.java
+* Lo realice en VSCode
+* El JDK es la versión 8
 
 ## Getting Started
 
