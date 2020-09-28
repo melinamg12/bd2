@@ -1,9 +1,6 @@
 import javax.swing.*;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.sql.*;
-import java.math.*;
+
 
 public class interfaz extends JFrame {
 	

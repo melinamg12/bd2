@@ -1,8 +1,4 @@
-import javax.sound.sampled.SourceDataLine;
 import javax.swing.*;
-
-import oracle.net.aso.e;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -41,7 +37,12 @@ public class interfazPrincipal extends Container implements ActionListener {
         if (e.getActionCommand().equals("Punto 1")) {
             App.frame.setContentPane(new interfazPuntoUno());
         } else if (e.getActionCommand().equals("Punto 2")) {
-            App.frame.setContentPane(new interfazPuntoDos());
+            try {
+                App.frame.setContentPane(new interfazPuntoDos());
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
         } else if (e.getActionCommand().equals("Punto 3")) {
             System.out.println("Good Job Mt");
             // App.frame.setContentPane(new InterfazEstadisticas());

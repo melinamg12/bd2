@@ -1,0 +1,76 @@
+DROP TABLE CITY;
+CREATE TABLE CITY(
+Nombre_ciudad VARCHAR2(40) PRIMARY KEY,
+Locales XMLTYPE
+);
+
+INSERT INTO CITY
+VALUES('Cali',XMLTYPE('
+<locales>
+ <rectangulo> 
+   <a>100</a>
+   <b>100</b>
+   <c>300</c>
+   <d>300</d>
+ </rectangulo>
+ <rectangulo>
+   <a>200</a>
+   <b>200</b>
+   <c>60</c>
+   <d>40</d>
+ </rectangulo>
+ <rectangulo>
+   <a>200</a>
+   <b>200</b>
+   <c>50</c>
+   <d>50</d>
+ </rectangulo>
+</locales>')
+);
+
+INSERT INTO CITY
+VALUES('Medellin',XMLTYPE('
+<locales>
+ <rectangulo> 
+   <a>100</a>
+   <b>100</b>
+   <c>300</c>
+   <d>300</d>
+ </rectangulo>
+ <rectangulo>
+   <a>200</a>
+   <b>200</b>
+   <c>60</c>
+   <d>40</d>
+ </rectangulo>
+ <rectangulo>
+   <a>200</a>
+   <b>200</b>
+   <c>50</c>
+   <d>50</d>
+ </rectangulo>
+</locales>')
+);
+INSERT INTO CITY
+VALUES('Bogota',XMLTYPE('
+<locales>
+ <rectangulo> 
+   <a>100</a>
+   <b>100</b>
+   <c>300</c>
+   <d>300</d>
+ </rectangulo>
+ <rectangulo>
+   <a>200</a>
+   <b>200</b>
+   <c>60</c>
+   <d>40</d>
+ </rectangulo>
+ <rectangulo>
+   <a>200</a>
+   <b>200</b>
+   <c>50</c>
+   <d>50</d>
+ </rectangulo>
+</locales>')
+);

@@ -1,7 +1,5 @@
 import javax.swing.*;
-import java.awt.*;
-import java.sql.*;
-import java.math.*;
+
 
 public class App extends JFrame {
     

@@ -12,36 +12,33 @@ import java.sql.*;
 import java.util.concurrent.FutureTask;
 import java.math.*;
 
-
 public class interfazPuntoUno extends Container implements ActionListener {
 
     JTextArea coordenadas;
     JTextField ciudad;
 
-
-    public interfazPuntoUno(){
+    public interfazPuntoUno() {
         setLayout(null);
-        
+
         coordenadas = new JTextArea();
         coordenadas.setBounds(10, 100, 400, 300);
 
         ciudad = new JTextField();
-        ciudad.setBounds(450, 150, 250, 100);
+        ciudad.setBounds(450, 150, 250, 30);
 
-        JButton insertarBoton = new JButton("Insertar");
-        insertarBoton.setBounds(450, 270,120, 50);
+        JButton insertarBoton = new JButton("Ingresar");
+        insertarBoton.setBounds(450, 270, 120, 50);
 
-        JButton  volverBoton = new JButton("Volver");
-        volverBoton.setBounds(680, 430,100, 30);
+        JButton volverBoton = new JButton("Volver");
+        volverBoton.setBounds(680, 430, 100, 30);
 
         JLabel infoPrincipalLabel = new JLabel("Ingreso de datos de las ventas de un vendedor en una Ciudad ");
-        infoPrincipalLabel.setBounds(200, 10,  700, 50);
+        infoPrincipalLabel.setBounds(200, 10, 700, 50);
         infoPrincipalLabel.setFont(new java.awt.Font("Arial", 1, 20));
 
         JLabel infoCiudadLabel = new JLabel("Seleccione la Ciudad");
-        infoCiudadLabel.setBounds(450, 120,  200, 30);
+        infoCiudadLabel.setBounds(450, 120, 200, 30);
         infoCiudadLabel.setFont(new java.awt.Font("Arial", 1, 14));
-
 
         add(coordenadas);
         add(ciudad);
@@ -49,24 +46,24 @@ public class interfazPuntoUno extends Container implements ActionListener {
         add(volverBoton);
         add(infoPrincipalLabel);
         add(infoCiudadLabel);
-    
-        insertarBoton.addActionListener(this);        
+
+        insertarBoton.addActionListener(this);
         volverBoton.addActionListener(this);
         SwingUtilities.updateComponentTreeUI(App.frame);
-
 
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("Ingresar")){
-            String valor; 
-            valor = ciudad.getText();
-            System.out.println(valor);
+        if (e.getActionCommand().equals("Ingresar")) {
+            String textoCiudad = ciudad.getText();
+            textoCiudad =textoCiudad.replace(" ", "");
+            String ciudadFormato = textoCiudad.substring(0, 1).toUpperCase() +textoCiudad.substring(1).toLowerCase();
+            System.out.println(ciudadFormato);
         } else {
             App.frame.setContentPane(new interfazPrincipal());
         }
 
     }
-    
+
 }
