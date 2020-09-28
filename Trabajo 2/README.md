@@ -1,3 +1,8 @@
+## Información General
+* El "Main.java" en este caso es el App.java
+* Lo realice en VSCode
+* El JDK es la versión 8
+
 ## Getting Started
 
 Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
