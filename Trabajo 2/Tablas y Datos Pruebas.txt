@@ -4,6 +4,33 @@ Nombre_ciudad VARCHAR2(40) PRIMARY KEY,
 Locales XMLTYPE
 );
 
+DROP TYPE ventas_tip FORCE; 
+CREATE OR REPLACE TYPE ventas_tip
+AS OBJECT(
+  x NUMBER(4),
+  y NUMBER(4),
+  valor NUMBER(20));
+/
+
+CREATE OR REPLACE TYPE
+nest_ventas AS TABLE OF ventas_tip;
+/
+
+CREATE OR REPLACE TYPE VVCITY_type AS 
+OBJECT(
+  codigoVendedor NUMBER(20),
+  ciudad VARCHAR2(40),
+  ventas nest_ventas);
+/
+
+DROP TABLE VVCITY;
+CREATE TABLE VVCITY OF VVCITY_type
+(PRIMARY KEY(codigoVendedor,ciudad))
+NESTED TABLE ventas STORE AS ventas;
+/
+
+
+
 INSERT INTO CITY
 VALUES('Cali',XMLTYPE('
 <locales>
