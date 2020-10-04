@@ -17,6 +17,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 
+import oracle.sql.ARRAY;
+
 public class interfazPuntoDos extends Container implements ActionListener {
 
     JTextArea coordenadas;
@@ -75,22 +77,19 @@ public class interfazPuntoDos extends Container implements ActionListener {
         // TODO Auto-generated method stub
         if (e.getActionCommand().equals("Insertar")) {
 
-            // QUITAR CCOMENTARIOS AL FINAL
-            // if (coordenadas.getText().isEmpty() ||
-            // ciudad.getSelectedItem().toString().isEmpty()
-            // || vendedor.getText().isEmpty()) {
-            //
-            // JOptionPane.showMessageDialog(null, "Hay campos que aun no se han
-            // diligenciado ", "Missing Data",
-            // JOptionPane.INFORMATION_MESSAGE);
-            //
-            // } else {
-            //
-            // }
-            try {
-                insertarDatos(coordenadas.getText(), ciudad.getSelectedItem().toString(),
-                        Integer.parseInt(vendedor.getText()));
-            } catch (SQLException e1) {
+            if (coordenadas.getText().isEmpty() || ciudad.getSelectedItem().toString().isEmpty()
+                    || vendedor.getText().isEmpty()) {
+
+                JOptionPane.showMessageDialog(null, "Hay campos que aun no se han diligenciado ", "Missing Data",
+                        JOptionPane.INFORMATION_MESSAGE);
+
+            } else {
+                try {
+                    insertarDatos(coordenadas.getText(), ciudad.getSelectedItem().toString(),
+                            Integer.parseInt(vendedor.getText()));
+                } catch (SQLException e1) {
+
+                }
 
             }
 
@@ -101,14 +100,13 @@ public class interfazPuntoDos extends Container implements ActionListener {
     }
 
     public void listarCiudades() throws SQLException {
-        
+
         Connection conn = Conexion.dbConexion();
         Statement sentencia = null;
         ResultSet resultado;
 
         sentencia = conn.createStatement();
 
-       
         // Consulta para extraer la ciudades almacenadas en la tabla City
         try {
             resultado = sentencia.executeQuery("SELECT Nombre_ciudad FROM CITY ORDER BY Nombre_Ciudad ASC");
@@ -130,19 +128,7 @@ public class interfazPuntoDos extends Container implements ActionListener {
         Statement sentencia = null;
         ResultSet resultado;
 
-       
-        sentencia = conn.createStatement();        
-
-        // Consulta para extraer la ciudades almacenadas en la tabla City
-        try {
-            resultado = sentencia.executeQuery("SELECT codigoVendedor, ciudad FROM VVCITY");
-            while (resultado.next()) {
-                // System.out.println(resultado.getString(1)+" "+resultado.getString(2));
-            }
-        } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            System.out.println("No se pudo realizar la consulta");
-        }
+        sentencia = conn.createStatement();
 
         String formatoCoordenadas = coordenadasXY.replaceAll("\s", "");
         formatoCoordenadas = formatoCoordenadas.replace("\n", ",");
@@ -195,27 +181,67 @@ public class interfazPuntoDos extends Container implements ActionListener {
                 sentencia.executeQuery(
                         "INSERT INTO VVCITY VALUES(" + codigoVendedor + ",'" + nombreCiudad + "'," + anidada);
 
-                JOptionPane.showMessageDialog(null,
-                        "Los datos suministrados han sido añadidos correctamente",
+                JOptionPane.showMessageDialog(null, "Los datos suministrados han sido añadidos correctamente",
                         "Datos Insertados", JOptionPane.INFORMATION_MESSAGE);
             }
 
             catch (SQLException e1) {
                 if (e1.getErrorCode() == 1) {
-                    System.out.println("Funciona");
+                    resultado = sentencia
+                            .executeQuery("SELECT t2.* FROM VVCITY t, TABLE (t.ventas)t2 WHERE CodigoVendedor ="
+                                    + codigoVendedor + "AND Ciudad ='" + nombreCiudad + "'");
+                    HashMap<String, Integer> existente = new HashMap<>();
+                    while (resultado.next()) {
+                        String clave = resultado.getString(1) + "," + resultado.getString(2);
+                        Integer valor = Integer.parseInt(resultado.getString(3));
+
+                        if (validacion.containsKey(clave)) {
+                            validacion.put(clave, validacion.get(clave) + valor);
+                        } else {
+                            validacion.put(clave, valor);
+
+                        }
+                        existente.put(clave, valor);
+                    }
+                    for (String key : validacion.keySet()) {
+                        String clave[] = key.split(",");
+                        Integer valor = validacion.get(key);
+
+                        if (existente.containsKey(key) && existente.get(key) != validacion.get(key)) {
+
+                            sentencia.executeQuery("UPDATE TABLE (SELECT ventas From VVCITY WHERE CodigoVendedor ="
+                                    + codigoVendedor + "AND Ciudad ='" + nombreCiudad + "')" + "SET valor = " + valor
+                                    + " WHERE x = " + clave[0] + " AND y =" + clave[1]);
+
+                        } else if (existente.containsKey(key) && existente.get(key) == validacion.get(key)) {
+
+                        } else {
+
+                            sentencia
+                                    .executeQuery("INSERT INTO TABLE(SELECT  ventas FROM VVCITY WHERE CodigoVendedor = "
+                                            + codigoVendedor + " AND Ciudad ='" + nombreCiudad + "')"
+                                            + " VALUES(ventas_tip(" + clave[0] + "," + clave[1] + "," + valor + "))");
+                        }
+                    }
+
+                    JOptionPane.showMessageDialog(null, "Los datos suministrados han sido añadidos correctamente",
+                            "Datos Insertados", JOptionPane.INFORMATION_MESSAGE);
+
                 }
             }
 
+            // Setear los valores de la GUI en blanco
+            coordenadas.setText("");
+            vendedor.setText("");
+            ciudad.setSelectedItem(0);
+
         } else {
-            // JOptionPane.showMessageDialog(null, "Las los datos suministrados de la
-            // ubicación de las ventas al parecer estan incompletos ", "Missing Data",
-            // JOptionPane.INFORMATION_MESSAGE);
-            // System.out.println("Las coordenadas estan incompletas");
+            JOptionPane.showMessageDialog(null,
+                    "Las los datos suministrados de la ubicación de las ventas al parecer estan incompletos ",
+                    "Missing Data", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        // Setear los valores de la GUI en blanco
-        coordenadas.setText("");
-        vendedor.setText("");
-        ciudad.setSelectedItem(0);
+        conn.commit();
+        conn.close();
     }
 }

@@ -1,0 +1,18 @@
+1,1,4
+1,1,6
+1,2,5
+1,2,90
+12,12,34
+12,12,6
+
+SELECT t2.* FROM VVCITY t, TABLE (t.ventas)t2 WHERE CodigoVendedor =1 AND Ciudad ='Bogota';
+
+
+--------------UPDATE E INSERT EXISTENTE-----------------------------------
+
+UPDATE TABLE (SELECT ventas From VVCITY WHERE CodigoVendedor = 1 AND Ciudad = 'Bogota')
+SET valor = valor +40
+WHERE x = 12  AND y = 12;
+
+
+INSERT INTO TABLE(SELECT  ventas FROM VVCITY WHERE CodigoVendedor = 1 AND Ciudad = 'Bogota') VALUES(ventas_tip(1,1,1))
