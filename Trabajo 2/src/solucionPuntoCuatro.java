@@ -37,7 +37,7 @@ public class solucionPuntoCuatro extends JFrame {
             while (resultado.next()) {
                 ArrayList<Integer> puntosConsulta = new ArrayList<>();
                 String clave = "p" + contador;
-
+          
                 puntosConsulta.add(resultado.getInt(1));
                 puntosConsulta.add(resultado.getInt(2));
                 puntosConsulta.add(resultado.getInt(3));

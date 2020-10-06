@@ -48,7 +48,12 @@ public class interfazPrincipal extends Container implements ActionListener {
                 e1.printStackTrace();
             }
         } else if (e.getActionCommand().equals("Punto 3")) {
-            System.out.println("Good Job Mt");
+        	try {
+                App.frame.setContentPane(new interfazPuntoTres());
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             // App.frame.setContentPane(new InterfazEstadisticas());
         } else if (e.getActionCommand().equals("Punto 4")) {
             try {
