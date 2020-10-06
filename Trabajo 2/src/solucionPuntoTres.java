@@ -46,7 +46,7 @@ public class solucionPuntoTres extends JFrame {
             }
             //System.out.println(contador);
         } catch (Exception e) {
-            System.out.println("ERRor");
+            System.out.println("Error");
         }
 
         ArrayList<Integer> puntos = new ArrayList<>();
