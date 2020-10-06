@@ -61,8 +61,8 @@ VALUES('Medellin',XMLTYPE('
  <rectangulo> 
    <a>100</a>
    <b>100</b>
-   <c>300</c>
-   <d>300</d>
+   <c>100</c>
+   <d>100</d>
  </rectangulo>
  <rectangulo>
    <a>200</a>
@@ -71,8 +71,8 @@ VALUES('Medellin',XMLTYPE('
    <d>40</d>
  </rectangulo>
  <rectangulo>
-   <a>200</a>
-   <b>200</b>
+   <a>300</a>
+   <b>300</b>
    <c>50</c>
    <d>50</d>
  </rectangulo>

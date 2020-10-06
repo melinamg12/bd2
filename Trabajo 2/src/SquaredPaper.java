@@ -13,14 +13,9 @@
   
     g.setColor(Color.white);
     g.fillRect(0,0,x,y);
-  
-    g.setColor(Color.black);
-    for (int i = 0; i < y; i+=25) g.drawLine(0,i,x,i);
-    for (int i = 0; i < x; i+=25) g.drawLine(i,0,i,y);
-  
-    g.setColor(Color.red);
-    g.drawLine(x/2,0,x/2,y);
-    g.drawLine(0,y/2,x,y/2);
+
+    
+    
     g.setColor(Color.blue);  
    
      Connection conn;
@@ -70,6 +65,7 @@
        g.drawString("Dos circulos adicionales",50,150);
        g.drawOval(100, 100, 50, 50);
        g.drawOval(150, 150, 50, 50);	 
+       
      } catch(SQLException e ){      
        System.out.println("Error: " + e.getMessage());
        }              

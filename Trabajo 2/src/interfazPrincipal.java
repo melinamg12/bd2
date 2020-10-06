@@ -14,19 +14,23 @@ public class interfazPrincipal extends Container implements ActionListener {
         final JButton puntoUno = new JButton("Punto 1");
         final JButton puntoDos = new JButton("Punto 2");
         final JButton puntoTres = new JButton("Punto 3");
+        final JButton puntoCuatro = new JButton("Punto 4");
         final JButton prueba = new JButton("Prueba");
 
-        puntoUno.setBounds(225, 50, 250, 50);
-        puntoDos.setBounds(225, 150, 250, 50);
-        puntoTres.setBounds(225, 250, 250, 50);
-        prueba.setBounds(225, 350, 250, 50);
+        puntoUno.setBounds(225, 25, 250, 50);
+        puntoDos.setBounds(225, 125, 250, 50);
+        puntoTres.setBounds(225, 225, 250, 50);
+        puntoCuatro.setBounds(225, 325, 250, 50);
+        prueba.setBounds(225, 425, 250, 50);
         add(puntoUno);
         add(puntoDos);
         add(puntoTres);
+        add(puntoCuatro);
         add(prueba);
         puntoUno.addActionListener(this);
         puntoDos.addActionListener(this);
         puntoTres.addActionListener(this);
+        puntoCuatro.addActionListener(this);
         prueba.addActionListener(this);
         SwingUtilities.updateComponentTreeUI(App.frame);
     }
@@ -46,7 +50,15 @@ public class interfazPrincipal extends Container implements ActionListener {
         } else if (e.getActionCommand().equals("Punto 3")) {
             System.out.println("Good Job Mt");
             // App.frame.setContentPane(new InterfazEstadisticas());
-        } else {
+        } else if (e.getActionCommand().equals("Punto 4")) {
+            try {
+                App.frame.setContentPane(new interfazPuntoCuatro());
+            } catch (SQLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+        }else {
             String args[] = new String[1000000];
             SquaredPaper.main(args);
         }

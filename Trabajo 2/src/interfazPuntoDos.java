@@ -134,14 +134,14 @@ public class interfazPuntoDos extends Container implements ActionListener {
         formatoCoordenadas = formatoCoordenadas.replace("\n", ",");
         String puntosVentas[] = formatoCoordenadas.split(",");
 
-        HashMap<String, Integer> validacion = new HashMap<>();
+        HashMap<String, Double> validacion = new HashMap<>();
 
         if (puntosVentas.length % 3 == 0) {
 
             for (int i = 0; i < puntosVentas.length; i += 3) {
 
                 String clave = puntosVentas[i] + "," + puntosVentas[i + 1];
-                Integer valor = Integer.parseInt(puntosVentas[i + 2]);
+                Double valor = Double.parseDouble(puntosVentas[i + 2]);
 
                 if (validacion.containsKey(clave)) {
                     validacion.put(clave, validacion.get(clave) + valor);
@@ -152,13 +152,13 @@ public class interfazPuntoDos extends Container implements ActionListener {
 
             }
 
-            ArrayList<Integer> coordenadasInsertar = new ArrayList<>();
+            ArrayList<Double> coordenadasInsertar = new ArrayList<>();
 
             for (String key : validacion.keySet()) {
                 String clave[] = key.split(",");
-                Integer valor = validacion.get(key);
-                coordenadasInsertar.add(Integer.parseInt(clave[0]));
-                coordenadasInsertar.add(Integer.parseInt(clave[1]));
+                Double valor = validacion.get(key);
+                coordenadasInsertar.add(Double.parseDouble(clave[0]));
+                coordenadasInsertar.add(Double.parseDouble(clave[1]));
                 coordenadasInsertar.add(valor);
             }
             try {
@@ -190,10 +190,10 @@ public class interfazPuntoDos extends Container implements ActionListener {
                     resultado = sentencia
                             .executeQuery("SELECT t2.* FROM VVCITY t, TABLE (t.ventas)t2 WHERE CodigoVendedor ="
                                     + codigoVendedor + "AND Ciudad ='" + nombreCiudad + "'");
-                    HashMap<String, Integer> existente = new HashMap<>();
+                    HashMap<String, Double> existente = new HashMap<>();
                     while (resultado.next()) {
                         String clave = resultado.getString(1) + "," + resultado.getString(2);
-                        Integer valor = Integer.parseInt(resultado.getString(3));
+                        Double valor = Double.parseDouble(resultado.getString(3));
 
                         if (validacion.containsKey(clave)) {
                             validacion.put(clave, validacion.get(clave) + valor);
@@ -205,7 +205,7 @@ public class interfazPuntoDos extends Container implements ActionListener {
                     }
                     for (String key : validacion.keySet()) {
                         String clave[] = key.split(",");
-                        Integer valor = validacion.get(key);
+                        Double valor = validacion.get(key);
 
                         if (existente.containsKey(key) && existente.get(key) != validacion.get(key)) {
 
@@ -229,6 +229,8 @@ public class interfazPuntoDos extends Container implements ActionListener {
 
                 }
             }
+            conn.commit();
+        conn.close();
 
             // Setear los valores de la GUI en blanco
             coordenadas.setText("");
@@ -241,7 +243,6 @@ public class interfazPuntoDos extends Container implements ActionListener {
                     "Missing Data", JOptionPane.INFORMATION_MESSAGE);
         }
 
-        conn.commit();
-        conn.close();
+        
     }
 }
