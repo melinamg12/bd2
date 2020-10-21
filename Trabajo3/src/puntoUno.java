@@ -53,10 +53,11 @@ public class puntoUno extends Container implements ActionListener{
             App.frame.setContentPane(new reglaUno());
         }
         else if(e.getActionCommand().equals("Regla 4")){
+            App.frame.setContentPane(new reglaCuatro());
 
         }
         else if(e.getActionCommand().equals("Regla 5")){
-
+            App.frame.setContentPane(new reglaCinco());
         }
         else{
             App.frame.setContentPane(new interfazPrincipal());
