@@ -64,7 +64,7 @@ public class reglaUno extends Container implements ActionListener {
         textoS1.setText("Ingrese los datos para crear S1");
 
         s1 = new JTextArea();
-        s1.setBounds(200, 330, 300, 80);
+        s1.setBounds(200, 330, 400, 80);
         s1.setBorder(border);
 
         JLabel textoS2 = new JLabel();
@@ -72,7 +72,7 @@ public class reglaUno extends Container implements ActionListener {
         textoS2.setText("Ingrese los datos para crear S2");
 
         s2 = new JTextArea();
-        s2.setBounds(200, 420, 300, 80);
+        s2.setBounds(200, 420, 400, 80);
         s2.setBorder(border);
 
         JButton calcular = new JButton("Calcular");
@@ -121,7 +121,9 @@ public class reglaUno extends Container implements ActionListener {
         String attrT1[] = atributosT1.getText().split(",");
         Set<String> T1tabla = new HashSet<String>();
         for (int i = 0; i < attrT1.length; i++) {
+            attrT1[i] = attrT1[i].replaceAll("\\s+","");
             T1tabla.add(attrT1[i].toLowerCase());
+            
         }
 
         String attrT2[] = atributosT2.getText().split(",");
@@ -129,17 +131,18 @@ public class reglaUno extends Container implements ActionListener {
         Set<String> T2tabla = new HashSet<String>();
         for (int i = 0; i < attrT2.length; i++) {
             if (!attrT2[i].toLowerCase().equals(claveForanea)) {
-                T2tabla.add(attrT2[i].toLowerCase());
+                attrT2[i] = attrT2[i].replaceAll("\\s+", "");
+                T2tabla.add(attrT2[i].toLowerCase().replaceAll("\\s+", ""));
             }
         }
 
-        String consultasS1[] = s1.getText().split(";");
+        String consultasS1[] = (s1.getText()).split(";");
         Set<Set> S1 = new HashSet<>();
         for (int i = 0; i < consultasS1.length; i++) {
             Set<String> temporal = new HashSet<>();
             String attr = consultasS1[i].replaceAll("[A-Z]{2,}", "");
             attr = attr.replaceAll(",", "");
-            String li[] = attr.split("\s{1,}");
+            String li[] = attr.split("\\s{1,}");
             for (int j = 0; j < li.length; j++) {
                 if (T2tabla.contains(li[j]) && li[j] != claveForanea) {
                     temporal.add(li[j]);
@@ -154,7 +157,7 @@ public class reglaUno extends Container implements ActionListener {
         for (int i = 0; i < consultasS2.length; i++) {
             String attr = consultasS2[i].replaceAll("[A-Z]{2,}", "");
             attr = attr.replaceAll(",", "");
-            String li[] = attr.split("\s{1,}");
+            String li[] = attr.split("\\s{1,}");
             for (int j = 0; j < li.length; j++) {
                 if ((T1tabla.contains(li[j]) || T2tabla.contains(li[j])) && li[j] != claveForanea) {
                     S2.add(li[j]);
@@ -210,23 +213,27 @@ public class reglaUno extends Container implements ActionListener {
             Set<String> compara = new HashSet<>(item);
             item.retainAll(T2primaS2);
             if(item.size() == 0){
+                if(!unionDoble.contains(compara)){
                 unionDoble.add(compara);
+                }
             }
-            System.out.println(arrayTempDoble[i]);
              
         }
         Object t2doblepri[] = unionDoble.toArray();
         for (int i = 0; i < t2doblepri.length; i++) {
             if(i== t2doblepri.length-1){
-                qprima += t2doblepri[i].toString().replace("\\[|]", "");
+                t2doblepri[i] = (t2doblepri[i].toString()).replaceAll("\\[|]", "");
+                qprima += t2doblepri[i].toString();
 
             }else{
-                qprima += t2doblepri[i].toString().replace("\\[|]", "")+",";
+                t2doblepri[i] = (t2doblepri[i].toString()).replaceAll("\\[|]", "");
+                qprima += t2doblepri[i].toString()+",";
             }
         }
         
         qprima += "}}";
         System.out.println(qprima);
+        JOptionPane.showMessageDialog(null, qprima);
         
     }
 

@@ -33,6 +33,7 @@ public class interfazPrincipal extends Container implements ActionListener {
         if (e.getActionCommand().equals("Punto 1")) {
             App.frame.setContentPane(new puntoUno());
         } else {
+            App.frame.setContentPane(new puntoDos());
 
         }
 

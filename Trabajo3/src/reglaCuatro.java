@@ -3,6 +3,7 @@ import javax.swing.BorderFactory;
 import javax.swing.border.Border;
 
 import javafx.scene.paint.Color;
+import oracle.net.aso.k;
 
 import java.awt.*;
 import java.util.*;
@@ -77,7 +78,7 @@ public class reglaCuatro extends Container implements ActionListener{
         textoS1.setText("Ingrese los datos para crear S1-T2");
 
         s1 = new JTextArea(); 
-        s1.setBounds(200, 460, 300, 80);
+        s1.setBounds(210, 460, 400, 80);
         s1.setBorder(border);
 
         JLabel textoS2 = new JLabel();
@@ -85,7 +86,7 @@ public class reglaCuatro extends Container implements ActionListener{
         textoS2.setText("Ingrese los datos para crear S1-T3");
 
         s2 = new JTextArea();
-        s2.setBounds(200, 550, 300, 80);
+        s2.setBounds(210, 550, 400, 80);
         s2.setBorder(border);
 
         JLabel textoS3 = new JLabel();
@@ -93,7 +94,7 @@ public class reglaCuatro extends Container implements ActionListener{
         textoS3.setText("Ingrese los datos para crear S3");
 
         s3 = new JTextArea();
-        s3.setBounds(200, 650, 300, 80);
+        s3.setBounds(210, 650, 400, 80);
         s3.setBorder(border);
 
 
@@ -149,6 +150,7 @@ public class reglaCuatro extends Container implements ActionListener{
         String attrT1[] = atributosT1.getText().split(",");
         Set<String> T1tabla = new HashSet<String>();
         for (int i = 0; i < attrT1.length; i++) {
+            attrT1[i] = attrT1[i].replaceAll("\\s+","");
             T1tabla.add(attrT1[i].toLowerCase());
         }
 
@@ -156,7 +158,8 @@ public class reglaCuatro extends Container implements ActionListener{
         String claveForaneaT2 = attrT2[1].toLowerCase();
         Set<String> T2tabla = new HashSet<String>();
         for (int i = 0; i < attrT2.length; i++) {
-            if (!attrT2[i].toLowerCase().replaceAll("\s", "").equals(claveForaneaT2)) {
+            if (!attrT2[i].toLowerCase().replaceAll("\\s", "").equals(claveForaneaT2)) {
+                attrT2[i] = attrT2[i].replaceAll("\\s+", "");
                 T2tabla.add(attrT2[i].toLowerCase());
             }
         }
@@ -165,10 +168,11 @@ public class reglaCuatro extends Container implements ActionListener{
         Set<String> T3tabla = new HashSet<String>();
         for (int i = 0; i < attrT3.length; i++) {
             if (!attrT3[i].toLowerCase().equals(claveForaneaT3)) {
+                attrT3[i] = attrT3[i].replaceAll("\\s+", "");
                 T3tabla.add(attrT3[i].toLowerCase());
             }
         }
-        System.out.println("AtrT1: "+ T1tabla+"\n AtrT2: "+T2tabla+"\n AtrT3: "+ T3tabla);
+        
 
         String consultasS1[] = s1.getText().split(";");
         Set<Set> S1 = new HashSet<>();
@@ -176,7 +180,7 @@ public class reglaCuatro extends Container implements ActionListener{
             Set<String> temporal = new HashSet<>();
             String attr = consultasS1[i].replaceAll("[A-Z]{2,}", "");
             attr = attr.replaceAll(",", "");
-            String li[] = attr.split("\s{1,}");
+            String li[] = attr.split("\\s{1,}");
             for (int j = 0; j < li.length; j++) {
                 if (T2tabla.contains(li[j]) && li[j] != claveForaneaT2) {
                     temporal.add(li[j]);
@@ -192,7 +196,7 @@ public class reglaCuatro extends Container implements ActionListener{
             Set<String> temporal = new HashSet<>();
             String attr = consultasS2[i].replaceAll("[A-Z]{2,}", "");
             attr = attr.replaceAll(",", "");
-            String li[] = attr.split("\s{1,}");
+            String li[] = attr.split("\\s{1,}");
             for (int j = 0; j < li.length; j++) {
                 if (T3tabla.contains(li[j]) && li[j] != claveForaneaT3) {
                     temporal.add(li[j]);
@@ -210,7 +214,7 @@ public class reglaCuatro extends Container implements ActionListener{
         for (int i = 0; i < consultasS3.length; i++) {
             String attr = consultasS3[i].replaceAll("[A-Z]{2,}", "");
             attr = attr.replaceAll(",", "");
-            String li[] = attr.split("\s{1,}");
+            String li[] = attr.split("\\s{1,}");
             for (int j = 0; j < li.length; j++) {
                 if ((T1tabla.contains(li[j]) || T2tabla.contains(li[j]))||T3tabla.contains(li[j]) && (li[j] != claveForaneaT2 && li[j] != claveForaneaT3)) {
                     S3.add(li[j]);
@@ -218,10 +222,7 @@ public class reglaCuatro extends Container implements ActionListener{
             }
 
         }
-        System.out.println("S1(T2): "+S1);
-        System.out.println("S1(T3): "+S2);
-        System.out.println("S3: "+S3);
-        
+                
         String qprima = "Q' = {";
         Object[] t1Arr = T1tabla.toArray();
         // Llenar Q' Con atributos de T1tabla
@@ -273,7 +274,9 @@ public class reglaCuatro extends Container implements ActionListener{
             Set<String> compara = new HashSet<>(item);
             item.retainAll(T2primaS3);
             if(item.size() == 0){
-                unionDoblepriS3.add(compara);
+                if(!unionDoblepriS3.contains(compara)){
+                    unionDoblepriS3.add(compara);
+                }
             }
              
         }
@@ -281,10 +284,12 @@ public class reglaCuatro extends Container implements ActionListener{
         Object t2doblepri[] = unionDoblepriS3.toArray();
         for (int i = 0; i < t2doblepri.length; i++) {
             if(i== t2doblepri.length-1){
-                qprima += t2doblepri[i].toString().replace("\\[|]", "");
+                t2doblepri[i] = (t2doblepri[i].toString()).replaceAll("\\[|]", "");
+                qprima += t2doblepri[i].toString();
 
             }else{
-                qprima += t2doblepri[i].toString().replace("\\[|]", "")+",";
+                t2doblepri[i] = (t2doblepri[i].toString()).replaceAll("\\[|]", "");
+                qprima += t2doblepri[i].toString()+",";
             }
         }
         
@@ -294,10 +299,13 @@ public class reglaCuatro extends Container implements ActionListener{
         Set<String> T3primaS3 = new HashSet<>(S3);
         T3primaS3.retainAll(T3tabla);
 
-        Set unionS3  = new HashSet<>();        
-        Object arrayTempS3[] = S2.toArray();        
+        Set unionS3  = new HashSet<>();
+        Set S2Copia = new HashSet<>(S2);
+        Object arrayTempS3[] = S2.toArray(); 
+        
         for (int i = 0; i < arrayTempS3.length; i++) {
-            Set<String> item = (Set<String>) arrayTempS3[i];
+            Object k = arrayTempS3[i];
+            Set<String> item = (Set<String>) k; //<---WARNING
             Set<String> compara = new HashSet<>(item);
             item.removeAll(T3primaS3);
             if(item.size() != 0 && !(item.equals(compara))){
@@ -318,7 +326,7 @@ public class reglaCuatro extends Container implements ActionListener{
         for (int i = 0; i < t3pri.length; i++) {
             if(i== t3pri.length-1){
                 qprima += t3pri[i].toString();
-
+                
             }else{
                 qprima += t3pri[i].toString()+",";
             }
@@ -328,13 +336,17 @@ public class reglaCuatro extends Container implements ActionListener{
         //Calcular T''3
         qprima += ","+T3.getText()+"``:{ "; //
         Set unionDoblepriS3T3 = new HashSet<>();        
-        Object arrayTempDoblePriS3[] = S2.toArray();   
+        Object arrayTempDoblePriS3[] = S2Copia.toArray();   
+        System.out.println("S2: "+S2Copia);   
         for (int i = 0; i < arrayTempDoblePriS3.length; i++) {
             Set<String> item = (Set<String>) arrayTempDoblePriS3[i];
+            System.out.println(item);
             Set<String> compara = new HashSet<>(item);
             item.retainAll(T3primaS3);
             if(item.size() == 0){
-                unionDoblepriS3T3.add(compara);
+                if(!unionDoblepriS3T3.contains(compara)){
+                    unionDoblepriS3T3.add(compara);
+                }
             }
              
         }
@@ -342,9 +354,11 @@ public class reglaCuatro extends Container implements ActionListener{
         Object t3doblepri[] = unionDoblepriS3T3.toArray();
         for (int i = 0; i < t3doblepri.length; i++) {
             if(i== t3doblepri.length-1){
+                t3doblepri[i] = (t3doblepri[i].toString()).replaceAll("\\[|]", "");
                 qprima += t3doblepri[i].toString();
 
             }else{
+                t3doblepri[i] = (t3doblepri[i].toString()).replaceAll("\\[|]", "");
                 qprima += t3doblepri[i].toString()+",";
             }
         }
@@ -354,6 +368,8 @@ public class reglaCuatro extends Container implements ActionListener{
 
 
         System.out.println(qprima);
+        
+        JOptionPane.showMessageDialog(null, qprima);
         
     }
     
